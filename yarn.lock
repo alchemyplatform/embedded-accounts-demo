@@ -12,7 +12,7 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@alchemy/aa-accounts@^3.0.0-alpha.0":
+"@alchemy/aa-accounts@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@alchemy/aa-accounts/-/aa-accounts-3.4.0.tgz#9fe7b12eb4d52f0e9047d765d365cc19a9aae791"
   integrity sha512-9G2Eq5TSFdxijTG32h8hP42o8uUtYVNPy7sTrmulWwD7/PP0xNNBN0qoK2vzv266JV+QRqj4ItMtYNewcHsFpg==
@@ -20,30 +20,22 @@
     "@alchemy/aa-core" "^3.4.0"
     viem "^2.7.8"
 
-"@alchemy/aa-accounts@next":
-  version "3.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@alchemy/aa-accounts/-/aa-accounts-3.0.0-alpha.13.tgz#1d039830e9414c30e912d201012cb5e22ff7e280"
-  integrity sha512-v+VqeFdlR7uzpItWTcAKo3l2wJeE5KPNO05Vx8XrctYUnUmakacNaqiSUNMWLJAOZ9w07swFHHx29LFWwAtzkA==
+"@alchemy/aa-alchemy@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@alchemy/aa-alchemy/-/aa-alchemy-3.4.0.tgz#6e90429c059c2aa8f7f1c28d2dc04be5f1aeb47c"
+  integrity sha512-QuGyu/6pRvLDNJmF+NXuIjEv2KWwsbCjzZQ2SrzJPePSqVcHEsN6U0Ms4tCx48DgVx+HHC4qHyaouSTmkcOCEg==
   dependencies:
-    "@alchemy/aa-core" "^3.0.0-alpha.13"
-    viem "^2.7.8"
-
-"@alchemy/aa-alchemy@next":
-  version "3.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@alchemy/aa-alchemy/-/aa-alchemy-3.0.0-alpha.13.tgz#9f24b4eeaaf1303de8846616aaaf223511c52a41"
-  integrity sha512-xO2tlCTp0jnJYI6VHp8vV/zs5XitiRIrAnxnrCvpfqdGLBaeQFtPgBwmGSPfUS3jGDPws82K21K0p004vILgrA==
-  dependencies:
-    "@alchemy/aa-core" "^3.0.0-alpha.13"
+    "@alchemy/aa-core" "^3.4.0"
     "@turnkey/http" "^2.6.2"
     "@turnkey/iframe-stamper" "^1.0.0"
     "@turnkey/viem" "^0.4.8"
     "@turnkey/webauthn-stamper" "^0.4.3"
     viem "^2.7.8"
   optionalDependencies:
-    "@alchemy/aa-accounts" "^3.0.0-alpha.0"
+    "@alchemy/aa-accounts" "^3.4.0"
     alchemy-sdk "^3.0.0"
 
-"@alchemy/aa-core@^3.0.0-alpha.13", "@alchemy/aa-core@^3.4.0":
+"@alchemy/aa-core@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@alchemy/aa-core/-/aa-core-3.4.0.tgz#08e514bf2f97a9c1452424a7f7915aa48daf4db2"
   integrity sha512-kEqsMwweMxQU6b8mKNmkUacyZRxdU7WBBiAYNmGxJK5djOdsGlfCBZGHu2AyAb8ogfrGWX8J+uVuYTnCIZS6ew==
@@ -3175,6 +3167,7 @@ streamsearch@^1.1.0:
   integrity sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
