@@ -7,15 +7,13 @@ import EmailForm from "./EmailForm";
 
 type Props = {
   signer?: AlchemySigner;
-  onLogin: () => void;
 };
 
-export const LoginSignupCard = ({ signer, onLogin }: Props) => {
+export const LoginSignupCard = ({ signer }: Props) => {
   const [email, setEmail] = useState<string | undefined>(undefined);
 
   const { mutate, isPending } = useMutation({
     mutationFn: signer?.authenticate,
-    onSuccess: onLogin,
     onError: (e) => {
       console.error("Failed to login", e);
     },

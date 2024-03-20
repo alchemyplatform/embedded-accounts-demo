@@ -67,9 +67,6 @@ export const UserCard = () => {
 
   const { mutate: logout } = useMutation({
     mutationFn: async () => signer.disconnect(),
-    onSuccess: () => {
-      window.location.reload();
-    },
   });
 
   const form = useForm({
