@@ -19,7 +19,11 @@ export const env = createEnv({
    * isn't built with invalid env vars. To expose them to the client, prefix them with
    * `NEXT_PUBLIC_`.
    */
-  client: {},
+  client: {
+    NEXT_PUBLIC_ROOT_ORG_ID: z
+      .string()
+      .default("3121a8a0-c548-4d14-a313-630c3b739858"),
+  },
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -31,5 +35,6 @@ export const env = createEnv({
     ALCHEMY_API_URL: process.env.ALCHEMY_API_URL,
     ALCHEMY_RPC_URL: process.env.ALCHEMY_RPC_URL,
     ROOT_ORG_ID: process.env.ROOT_ORG_ID,
+    NEXT_PUBLIC_ROOT_ORG_ID: process.env.ROOT_ORG_ID,
   },
 });

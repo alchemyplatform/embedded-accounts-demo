@@ -9,12 +9,19 @@ import {
   AlchemySigner,
   AlchemySignerClient,
   AlchemySignerParams,
+  AlchemySignerStatus,
   User,
 } from "@alchemy/aa-alchemy";
 import { sepolia } from "@alchemy/aa-core";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { PropsWithChildren, createContext, useContext, useState } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { custom } from "viem";
 
 type SignerContextType = {
@@ -22,7 +29,6 @@ type SignerContextType = {
   account?: MultiOwnerModularAccount<AlchemySigner> | null;
   user?: User | null;
   isLoadingUser: boolean;
-  refetchUserDetails: () => void;
 };
 
 const SignerContext = createContext<SignerContextType | undefined>(undefined);
@@ -44,6 +50,14 @@ export const SignerContextProvider = ({
   client: Exclude<AlchemySignerParams["client"], AlchemySignerClient>;
   sessionConfig?: AlchemySignerParams["sessionConfig"];
 }>) => {
+  const [userState, setUserState] = useState<{
+    user: User;
+    account: MultiOwnerModularAccount<AlchemySigner>;
+  } | null>(null);
+  const [status, setStatus] = useState<AlchemySignerStatus>(
+    AlchemySignerStatus.INITIALIZING
+  );
+
   const [signer] = useState<AlchemySigner | undefined>(() => {
     if (typeof window === "undefined") return undefined;
 
@@ -57,49 +71,65 @@ export const SignerContextProvider = ({
 
   const params = useSearchParams();
 
-  // TODO: the refetch logic should be moved into the context here
-  const {
-    data = { user: null, account: null },
-    isLoading: isLoadingUser,
-    refetch: refetchUserDetails,
-  } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      if (params.get("bundle") != null) {
-        await signer!.authenticate({
-          type: "email",
-          bundle: params.get("bundle")!,
-        });
-      }
-
-      // this only ever runs on the client, so we can assume the signer is defined
-      const user = await signer!.getAuthDetails().catch(() => {
-        return null;
+  // we use this mutation so we can get the loading state of the account creation
+  // the signer state only gives us the state of the user fetching
+  const { mutateAsync: createAccount, isPending } = useMutation({
+    mutationFn: async () => {
+      return createMultiOwnerModularAccount({
+        transport: custom(publicClient),
+        chain: sepolia,
+        signer: signer!,
       });
-
-      const account = user
-        ? await createMultiOwnerModularAccount({
-            transport: custom(publicClient),
-            chain: sepolia,
-            signer: signer!,
-          })
-        : null;
-
-      return {
-        account,
-        user,
-      };
     },
   });
+
+  // register state change listeners for the signer
+  useEffect(() => {
+    if (!signer) return;
+
+    const removeConnectedListener = signer.on("connected", async (user) => {
+      setUserState({
+        user,
+        account: await createAccount(),
+      });
+    });
+
+    const removeDisconnectListener = signer.on("disconnected", () => {
+      setUserState(null);
+    });
+
+    // this is mainly used for loading states
+    const removeStatusChangedListener = signer.on("statusChanged", (status) => {
+      setStatus(status);
+    });
+
+    return () => {
+      removeConnectedListener();
+      removeDisconnectListener();
+      removeStatusChangedListener();
+    };
+  }, [createAccount, signer]);
+
+  // Look for the bundle in the URL and authenticate the user if it exists
+  useEffect(() => {
+    if (params.get("bundle") != null && !userState) {
+      signer!.authenticate({
+        type: "email",
+        bundle: params.get("bundle")!,
+      });
+    }
+  }, [params, signer, userState]);
 
   return (
     <SignerContext.Provider
       value={{
         signer: signer!,
-        user: data.user,
-        account: data.account,
-        isLoadingUser,
-        refetchUserDetails,
+        user: userState?.user ?? null,
+        account: userState?.account ?? null,
+        isLoadingUser:
+          isPending ||
+          status === AlchemySignerStatus.INITIALIZING ||
+          status === AlchemySignerStatus.AUTHENTICATING,
       }}
     >
       {children}
