@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@alchemy/aa-accounts": "^3.8.2-alpha.1",
-    "@alchemy/aa-alchemy": "^3.9.0-alpha.3",
+    "@alchemy/aa-accounts": "^3.9.0",
+    "@alchemy/aa-alchemy": "^3.9.0",
+    "@alchemy/aa-core": "^3.9.0",
     "@t3-oss/env-core": "^0.7.1",
     "@t3-oss/env-nextjs": "^0.7.1",
     "@tanstack/react-form": "^0.13.3",

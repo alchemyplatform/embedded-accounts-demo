@@ -1,83 +1,86 @@
 "use client";
-import { publicClient } from "@/client";
-import { useAccountContext } from "@/context/AccountContext";
-import { useSignerContext } from "@/context/SignerContext";
+import {
+  useAddPasskey,
+  useBundlerClient,
+  useExportAccount,
+  useLogout,
+  useSigner,
+  useSignMessage,
+  useSmartAccountClient,
+  useUser,
+} from "@alchemy/aa-alchemy/react";
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-form-adapter";
+import React, { useState } from "react";
+import { isHex } from "viem";
 import { z } from "zod";
 
 const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
 const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
 
-const iframeCss = `
-iframe {
-    box-sizing: border-box;
-    width: 100%;
-    height: 120px;
-    border-radius: 8px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(216, 219, 227, 1);
-    padding: 20px;
-}
-`;
+const iframeCss: React.CSSProperties = {
+  boxSizing: "border-box",
+  width: "100%",
+  height: "120px",
+  borderRadius: "8px",
+  borderWidth: "1px",
+  borderStyle: "solid",
+  borderColor: "rgba(216, 219, 227, 1)",
+  padding: "20px",
+};
 
 export const UserCard = () => {
-  const { signer, user, account } = useSignerContext();
-  const { provider } = useAccountContext();
+  const bundlerClient = useBundlerClient();
+  const signer = useSigner();
+  const { client, isLoadingClient } = useSmartAccountClient({
+    type: "MultiOwnerModularAccount",
+  });
+  const user = useUser();
+  const [isValid, setIsValid] = useState<boolean | undefined>(undefined);
 
-  const { mutate: signMessage, data: { signature, isValid } = {} } =
-    useMutation({
-      mutationFn: async (msg: string) => {
-        return provider
-          .signMessageWith6492({ message: msg })
-          .then(async (signature) => {
-            return {
-              signature,
-              isValid: await publicClient
-                .verifyMessage({
-                  address: provider.getAddress(),
-                  message: msg,
-                  signature,
-                })
-                .catch((e: any) => {
-                  console.log("error verifying signature, ", e);
-                  return false;
-                }),
-            };
-          });
+  const { signMessage, signedMessage } = useSignMessage({
+    client,
+    onSuccess: async (signature, msg) => {
+      setIsValid(
+        await bundlerClient
+          .verifyMessage({
+            address: client!.getAddress(),
+            message: msg.message,
+            signature,
+          })
+          .catch((e: any) => {
+            console.log("error verifying signature, ", e);
+            return false;
+          })
+      );
+    },
+  });
+
+  const { ExportAccountComponent, exportAccount, isExporting, isExported } =
+    useExportAccount({
+      params: {
+        iframeContainerId: TurnkeyExportWalletContainerId,
+        iframeElementId: TurnkeyExportWalletElementId,
       },
     });
 
-  const { mutate, isPending, data } = useMutation({
-    mutationFn: async () =>
-      signer.exportWallet({
-        iframeContainerId: TurnkeyExportWalletContainerId,
-        iframeElementId: TurnkeyExportWalletElementId,
-      }),
-  });
-
-  const { mutate: addPasskey } = useMutation({
-    mutationFn: async () => signer.addPasskey({}),
+  const { addPasskey } = useAddPasskey({
     onSuccess: (data) => {
       console.log(data);
     },
   });
 
-  const { mutate: logout } = useMutation({
-    mutationFn: async () => signer.disconnect(),
-    onSuccess: () => {
-      window.location.reload();
-    },
-  });
+  const { logout } = useLogout();
 
   const form = useForm({
     defaultValues: {
       message: "",
     },
     validatorAdapter: zodValidator,
-    onSubmit: ({ value }) => signMessage(value.message),
+    onSubmit: ({ value }) =>
+      signMessage({
+        message: isHex(value.message) ? { raw: value.message } : value.message,
+      }),
   });
 
   return (
@@ -98,7 +101,7 @@ export const UserCard = () => {
         </div>
         <div className="flex flex-col">
           <strong>Account Address</strong>
-          <code className="break-words">{account!.address}</code>
+          <code className="break-words">{client?.account.address}</code>
         </div>
         <div className="flex flex-col">
           <strong>Signer Address</strong>
@@ -144,7 +147,7 @@ export const UserCard = () => {
               {({ canSubmit, isSubmitting }) => (
                 <button
                   className="btn"
-                  disabled={!canSubmit || isSubmitting}
+                  disabled={!canSubmit || isSubmitting || isLoadingClient}
                   type="submit"
                 >
                   Submit
@@ -153,11 +156,11 @@ export const UserCard = () => {
             </form.Subscribe>
           </form>
         </form.Provider>
-        {signature && (
+        {signedMessage && (
           <>
             <div className="flex flex-col">
               <strong>Signature</strong>
-              <code className="break-words">{signature}</code>
+              <code className="break-words">{signedMessage}</code>
             </div>
             <div className="flex flex-col">
               <strong>Is Valid?</strong>
@@ -166,20 +169,18 @@ export const UserCard = () => {
           </>
         )}
         <div className="flex flex-col gap-2">
-          {!data ? (
-            <button onClick={() => mutate()} disabled={isPending}>
+          {!isExported ? (
+            <button onClick={() => exportAccount()} disabled={isExporting}>
               Export Wallet
             </button>
           ) : (
             <strong>Seed Phrase</strong>
           )}
-          <div
+          <ExportAccountComponent
+            iframeCss={iframeCss}
             className="w-full"
-            style={{ display: !data ? "none" : "block" }}
-            id={TurnkeyExportWalletContainerId}
-          >
-            <style>{iframeCss}</style>
-          </div>
+            isExported={isExported}
+          />
         </div>
       </div>
     </div>

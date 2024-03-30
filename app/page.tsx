@@ -2,23 +2,22 @@
 
 import { LoginSignupCard } from "@/components/LoginSignupCard";
 import { UserCard } from "@/components/UserCard";
-import { AccountContextProvider } from "@/context/AccountContext";
-import { useSignerContext } from "@/context/SignerContext";
+import { useAccount, useSignerStatus } from "@alchemy/aa-alchemy/react";
 
 export default function Home() {
-  const { signer, account, isLoadingUser, refetchUserDetails } =
-    useSignerContext();
+  const signerStatus = useSignerStatus();
+  const { account } = useAccount({
+    type: "MultiOwnerModularAccount",
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24 gap-4 justify-center">
-      {isLoadingUser ? (
+      {signerStatus.isInitializing ? (
         <span className="loading loading-ring loading-lg"></span>
       ) : account == null ? (
-        <LoginSignupCard signer={signer} onLogin={refetchUserDetails} />
+        <LoginSignupCard />
       ) : (
-        <AccountContextProvider account={account}>
-          <UserCard />
-        </AccountContextProvider>
+        <UserCard />
       )}
     </main>
   );
