@@ -1,7 +1,10 @@
 "use client";
-import { publicClient } from "@/client";
-import { useAccountContext } from "@/context/AccountContext";
-import { useSignerContext } from "@/context/SignerContext";
+import {
+  useBundlerClient,
+  useSigner,
+  useSmartAccountClient,
+  useUser,
+} from "@alchemy/aa-alchemy/react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-form-adapter";
@@ -24,20 +27,26 @@ iframe {
 `;
 
 export const UserCard = () => {
-  const { signer, user, account } = useSignerContext();
-  const { provider } = useAccountContext();
+  const bundlerClient = useBundlerClient();
+  const signer = useSigner();
+  const { client, isLoadingClient } = useSmartAccountClient({
+    type: "MultiOwnerModularAccount",
+  });
+  const user = useUser();
 
   const { mutate: signMessage, data: { signature, isValid } = {} } =
     useMutation({
       mutationFn: async (msg: string) => {
-        return provider
+        if (!client) throw new Error("Provider not found");
+
+        return client
           .signMessageWith6492({ message: msg })
           .then(async (signature) => {
             return {
               signature,
-              isValid: await publicClient
+              isValid: await bundlerClient
                 .verifyMessage({
-                  address: provider.getAddress(),
+                  address: client.getAddress(),
                   message: msg,
                   signature,
                 })
@@ -50,26 +59,26 @@ export const UserCard = () => {
       },
     });
 
+  // TODO: we need to add this as a hook
   const { mutate, isPending, data } = useMutation({
     mutationFn: async () =>
-      signer.exportWallet({
+      signer?.exportWallet({
         iframeContainerId: TurnkeyExportWalletContainerId,
         iframeElementId: TurnkeyExportWalletElementId,
       }),
   });
 
+  // TODO: we need to add this as a hook
   const { mutate: addPasskey } = useMutation({
-    mutationFn: async () => signer.addPasskey({}),
+    mutationFn: async () => signer?.addPasskey({}),
     onSuccess: (data) => {
       console.log(data);
     },
   });
 
+  // TODO: we need to add this as a hook
   const { mutate: logout } = useMutation({
-    mutationFn: async () => signer.disconnect(),
-    onSuccess: () => {
-      window.location.reload();
-    },
+    mutationFn: async () => signer?.disconnect(),
   });
 
   const form = useForm({
@@ -98,7 +107,7 @@ export const UserCard = () => {
         </div>
         <div className="flex flex-col">
           <strong>Account Address</strong>
-          <code className="break-words">{account!.address}</code>
+          <code className="break-words">{client?.account.address}</code>
         </div>
         <div className="flex flex-col">
           <strong>Signer Address</strong>
@@ -144,7 +153,7 @@ export const UserCard = () => {
               {({ canSubmit, isSubmitting }) => (
                 <button
                   className="btn"
-                  disabled={!canSubmit || isSubmitting}
+                  disabled={!canSubmit || isSubmitting || isLoadingClient}
                   type="submit"
                 >
                   Submit
