@@ -27,11 +27,7 @@ export const LoginSignupCard = ({ signer, onLogin }: Props) => {
         <h2 className="card-title">Login / Signup</h2>
         {email && isPending ? (
           // OTP bundle input
-          <EmailBundleForm
-            onSubmit={(bundle) => {
-              // resolve(bundle);
-            }}
-          />
+          <EmailBundleForm />
         ) : (
           // email input
           <>
