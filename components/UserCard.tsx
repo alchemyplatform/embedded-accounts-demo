@@ -1,9 +1,9 @@
 "use client";
 import {
   useAddPasskey,
+  useDisconnectSigner,
   useExportWallet,
   useSignMessage,
-  useSignerDisconnect,
   useSmartAccountClient,
   useUser,
 } from "@alchemy/aa-alchemy/react";
@@ -42,7 +42,7 @@ export const UserCard = () => {
 
   const { addPasskey } = useAddPasskey();
 
-  const { disconnect: logout } = useSignerDisconnect();
+  const { disconnect: logout } = useDisconnectSigner();
 
   const form = useForm({
     defaultValues: {
