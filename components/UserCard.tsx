@@ -1,12 +1,13 @@
 "use client";
 import {
-  useBundlerClient,
-  useSigner,
+  useAddPasskey,
+  useDisconnectSigner,
+  useExportWallet,
+  useSignMessage,
   useSmartAccountClient,
   useUser,
 } from "@alchemy/aa-alchemy/react";
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 
@@ -27,66 +28,28 @@ iframe {
 `;
 
 export const UserCard = () => {
-  const bundlerClient = useBundlerClient();
-  const signer = useSigner();
   const { client, isLoadingClient } = useSmartAccountClient({
     type: "MultiOwnerModularAccount",
   });
   const user = useUser();
 
-  const { mutate: signMessage, data: { signature, isValid } = {} } =
-    useMutation({
-      mutationFn: async (msg: string) => {
-        if (!client) throw new Error("Provider not found");
+  const { signMessage, signedMessageInfo } = useSignMessage({ client });
 
-        return client
-          .signMessageWith6492({ message: msg })
-          .then(async (signature) => {
-            return {
-              signature,
-              isValid: await bundlerClient
-                .verifyMessage({
-                  address: client.getAddress(),
-                  message: msg,
-                  signature,
-                })
-                .catch((e: any) => {
-                  console.log("error verifying signature, ", e);
-                  return false;
-                }),
-            };
-          });
-      },
-    });
-
-  // TODO: we need to add this as a hook
-  const { mutate, isPending, data } = useMutation({
-    mutationFn: async () =>
-      signer?.exportWallet({
-        iframeContainerId: TurnkeyExportWalletContainerId,
-        iframeElementId: TurnkeyExportWalletElementId,
-      }),
+  const { exportWallet, isExporting, isExported } = useExportWallet({
+    iframeContainerId: TurnkeyExportWalletContainerId,
+    iframeElementId: TurnkeyExportWalletElementId,
   });
 
-  // TODO: we need to add this as a hook
-  const { mutate: addPasskey } = useMutation({
-    mutationFn: async () => signer?.addPasskey({}),
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
+  const { addPasskey } = useAddPasskey();
 
-  // TODO: we need to add this as a hook
-  const { mutate: logout } = useMutation({
-    mutationFn: async () => signer?.disconnect(),
-  });
+  const { disconnect: logout } = useDisconnectSigner();
 
   const form = useForm({
     defaultValues: {
       message: "",
     },
     validatorAdapter: zodValidator,
-    onSubmit: ({ value }) => signMessage(value.message),
+    onSubmit: ({ value }) => signMessage({ message: value.message }),
   });
 
   return (
@@ -162,21 +125,21 @@ export const UserCard = () => {
             </form.Subscribe>
           </form>
         </form.Provider>
-        {signature && (
+        {signedMessageInfo && (
           <>
             <div className="flex flex-col">
               <strong>Signature</strong>
-              <code className="break-words">{signature}</code>
+              <code className="break-words">{signedMessageInfo.signature}</code>
             </div>
             <div className="flex flex-col">
               <strong>Is Valid?</strong>
-              <code>{String(isValid)}</code>
+              <code>{String(signedMessageInfo.isValid)}</code>
             </div>
           </>
         )}
         <div className="flex flex-col gap-2">
-          {!data ? (
-            <button onClick={() => mutate()} disabled={isPending}>
+          {!isExported ? (
+            <button onClick={() => exportWallet()} disabled={isExporting}>
               Export Wallet
             </button>
           ) : (
@@ -184,7 +147,7 @@ export const UserCard = () => {
           )}
           <div
             className="w-full"
-            style={{ display: !data ? "none" : "block" }}
+            style={{ display: !isExported ? "none" : "block" }}
             id={TurnkeyExportWalletContainerId}
           >
             <style>{iframeCss}</style>
