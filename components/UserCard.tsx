@@ -1,18 +1,17 @@
 "use client";
 import {
   useAddPasskey,
-  useDisconnectSigner,
-  useExportWallet,
+  useBundlerClient,
+  useExportAccount,
+  useLogout,
   useSignMessage,
   useSmartAccountClient,
   useUser,
 } from "@alchemy/aa-alchemy/react";
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
+import { useCallback, useState } from "react";
 import { z } from "zod";
-
-const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
-const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
 
 const iframeCss = `
 iframe {
@@ -28,28 +27,47 @@ iframe {
 `;
 
 export const UserCard = () => {
+  const bundlerClient = useBundlerClient();
   const { client, isLoadingClient } = useSmartAccountClient({
     type: "MultiOwnerModularAccount",
   });
   const user = useUser();
 
-  const { signMessage, signedMessageInfo } = useSignMessage({ client });
+  const { signMessageAsync, signedMessage } = useSignMessage({ client });
+  const [isValid, setIsValid] = useState<boolean>(false);
+  const signMessageAndVerify = useCallback(
+    async ({ message }: { message: string }) => {
+      if (!client) {
+        return;
+      }
 
-  const { exportWallet, isExporting, isExported } = useExportWallet({
-    iframeContainerId: TurnkeyExportWalletContainerId,
-    iframeElementId: TurnkeyExportWalletElementId,
-  });
+      const signature = await signMessageAsync({ message });
+      const isValid = await bundlerClient.verifyMessage({
+        message,
+        signature,
+        address: client.getAddress(),
+      });
+
+      setIsValid(isValid);
+
+      return { signature, isValid };
+    },
+    [bundlerClient, client, signMessageAsync]
+  );
+
+  const { exportAccount, isExporting, isExported, ExportAccountComponent } =
+    useExportAccount();
 
   const { addPasskey } = useAddPasskey();
 
-  const { disconnect: logout } = useDisconnectSigner();
+  const { logout } = useLogout({ onSuccess: window.location.reload });
 
   const form = useForm({
     defaultValues: {
       message: "",
     },
     validatorAdapter: zodValidator,
-    onSubmit: ({ value }) => signMessage({ message: value.message }),
+    onSubmit: ({ value }) => signMessageAndVerify({ message: value.message }),
   });
 
   return (
@@ -125,33 +143,31 @@ export const UserCard = () => {
             </form.Subscribe>
           </form>
         </form.Provider>
-        {signedMessageInfo && (
+        {signedMessage && (
           <>
             <div className="flex flex-col">
               <strong>Signature</strong>
-              <code className="break-words">{signedMessageInfo.signature}</code>
+              <code className="break-words">{signedMessage}</code>
             </div>
             <div className="flex flex-col">
               <strong>Is Valid?</strong>
-              <code>{String(signedMessageInfo.isValid)}</code>
+              <code>{String(isValid)}</code>
             </div>
           </>
         )}
         <div className="flex flex-col gap-2">
           {!isExported ? (
-            <button onClick={() => exportWallet()} disabled={isExporting}>
+            <button onClick={() => exportAccount()} disabled={isExporting}>
               Export Wallet
             </button>
           ) : (
             <strong>Seed Phrase</strong>
           )}
-          <div
+          <ExportAccountComponent
             className="w-full"
-            style={{ display: !isExported ? "none" : "block" }}
-            id={TurnkeyExportWalletContainerId}
-          >
-            <style>{iframeCss}</style>
-          </div>
+            iframeCss={iframeCss}
+            isExported={isExported}
+          />
         </div>
       </div>
     </div>
