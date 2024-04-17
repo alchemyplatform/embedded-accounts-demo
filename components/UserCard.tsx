@@ -13,19 +13,6 @@ import { zodValidator } from "@tanstack/zod-form-adapter";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 
-const iframeCss = `
-iframe {
-    box-sizing: border-box;
-    width: 100%;
-    height: 120px;
-    border-radius: 8px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(216, 219, 227, 1);
-    padding: 20px;
-}
-`;
-
 export const UserCard = () => {
   const bundlerClient = useBundlerClient();
   const { client, isLoadingClient } = useSmartAccountClient({
@@ -165,7 +152,16 @@ export const UserCard = () => {
           )}
           <ExportAccountComponent
             className="w-full"
-            iframeCss={iframeCss}
+            iframeCss={{
+              boxSizing: "border-box",
+              width: "100%",
+              height: "120px",
+              borderRadius: "8px",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "rgba(216, 219, 227, 1)",
+              padding: "20px",
+            }}
             isExported={isExported}
           />
         </div>
