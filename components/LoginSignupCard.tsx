@@ -1,24 +1,14 @@
 "use client";
-import { AlchemySigner } from "@alchemy/aa-alchemy";
-import { useMutation } from "@tanstack/react-query";
+import { useAccount, useAuthenticate } from "@alchemy/aa-alchemy/react";
 import { useState } from "react";
-import EmailBundleForm from "./EmailBundleForm";
 import EmailForm from "./EmailForm";
 
-type Props = {
-  signer?: AlchemySigner;
-  onLogin: () => void;
-};
-
-export const LoginSignupCard = ({ signer, onLogin }: Props) => {
+export const LoginSignupCard = () => {
   const [email, setEmail] = useState<string | undefined>(undefined);
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: signer?.authenticate,
-    onSuccess: onLogin,
-    onError: (e) => {
-      console.error("Failed to login", e);
-    },
+  const { authenticate, isPending } = useAuthenticate();
+  const { isLoadingAccount } = useAccount({
+    type: "MultiOwnerModularAccount",
+    skipCreate: true,
   });
 
   return (
@@ -26,15 +16,15 @@ export const LoginSignupCard = ({ signer, onLogin }: Props) => {
       <div className="card-body gap-4">
         <h2 className="card-title">Login / Signup</h2>
         {email && isPending ? (
-          // OTP bundle input
-          <EmailBundleForm />
+          <div>Check your email and click the link to complete login</div>
         ) : (
           // email input
           <>
             <EmailForm
+              buttonDisabled={isLoadingAccount || isPending}
               onSubmit={(email) => {
                 setEmail(email);
-                mutate({
+                authenticate({
                   type: "email",
                   email,
                 });
@@ -42,19 +32,25 @@ export const LoginSignupCard = ({ signer, onLogin }: Props) => {
             />
             <div className="flex flex-row gap-2">
               <button
+                className="btn btn-ghost btn-sm"
                 onClick={() =>
-                  mutate({
+                  authenticate({
                     type: "passkey",
                     createNew: true,
                     username: "Test User",
                   })
                 }
+                disabled={isLoadingAccount || isPending}
               >
                 Use New Passkey
               </button>
               <div className="divider divider-horizontal"></div>
               <button
-                onClick={() => mutate({ type: "passkey", createNew: false })}
+                className="btn btn-ghost btn-sm"
+                onClick={() =>
+                  authenticate({ type: "passkey", createNew: false })
+                }
+                disabled={isLoadingAccount || isPending}
               >
                 Use Existing Passkey
               </button>

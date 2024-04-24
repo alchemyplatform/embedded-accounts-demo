@@ -12,7 +12,7 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@alchemy/aa-accounts@^3.8.2-alpha.0", "@alchemy/aa-accounts@^3.8.2-alpha.1":
+"@alchemy/aa-accounts@^3.8.2-alpha.0":
   version "3.8.2-alpha.1"
   resolved "https://registry.yarnpkg.com/@alchemy/aa-accounts/-/aa-accounts-3.8.2-alpha.1.tgz#3513d3a2158f5ffc3709458d96463d4fb9a7b06a"
   integrity sha512-BvgHjFyAio9Qa33Xvw2+eLAVDW2DDkXKhoGt/EVeFZhSlgd6F2lexA2S8KCGrEKUQSFmgeNsC4sqiRyelJeuRg==
@@ -20,12 +20,20 @@
     "@alchemy/aa-core" "^3.8.2-alpha.1"
     viem "2.8.6"
 
-"@alchemy/aa-alchemy@^3.9.0-alpha.3":
-  version "3.9.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@alchemy/aa-alchemy/-/aa-alchemy-3.9.0-alpha.3.tgz#7bf22cddac66ba8b949947929b909372768ab806"
-  integrity sha512-HYCH69vyHPlGzFiEA9y9uT7z4z3ZTLGnY2emOs30JDpdGfuqBamIr7LxU04U6xVWHZB8RN2ZNK/0qxbZCOuAJQ==
+"@alchemy/aa-accounts@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@alchemy/aa-accounts/-/aa-accounts-3.9.0.tgz#b29a25bf695c0caf987a2a6afa1e77dda0651e0e"
+  integrity sha512-f9LcKFjgoKUDXiTNazjZ74429Lj6tSr1Jw6staWOAA8ILaRh312oU94owU5O+9l7kPGZQbjvZS7ngcwQcsZv+A==
   dependencies:
-    "@alchemy/aa-core" "^3.8.2-alpha.1"
+    "@alchemy/aa-core" "^3.9.0"
+    viem "2.8.6"
+
+"@alchemy/aa-alchemy@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@alchemy/aa-alchemy/-/aa-alchemy-3.9.0.tgz#65c45a846fd6016299d1598c99120255476aeacd"
+  integrity sha512-seXtHYgYDjPvDtmXtPcsRRpRytActtHn2IDwqCi+2gtQ65Wj/kHiHZFRWVLQgjpjqzCw6X/oiJgFJuhnaONJJg==
+  dependencies:
+    "@alchemy/aa-core" "^3.9.0"
     "@turnkey/http" "^2.6.2"
     "@turnkey/iframe-stamper" "^1.0.0"
     "@turnkey/viem" "^0.4.8"
@@ -41,6 +49,16 @@
   version "3.8.2-alpha.1"
   resolved "https://registry.yarnpkg.com/@alchemy/aa-core/-/aa-core-3.8.2-alpha.1.tgz#195ef93d45942f2d8fc077abd5dd02dc12ed008f"
   integrity sha512-zrEiuo4vuZq8vq5Nba5xztSIQFDW3tFK93mFnoUhjxUeJYZ7By8YR/A8Q8nE8jPsfiw9x9S334IYGaaetcIctg==
+  dependencies:
+    abitype "^0.8.3"
+    eventemitter3 "^5.0.1"
+    viem "2.8.6"
+    zod "^3.22.4"
+
+"@alchemy/aa-core@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@alchemy/aa-core/-/aa-core-3.9.0.tgz#04390895f4955b01fadfc0bc4e3f288997d5788b"
+  integrity sha512-Z90oIl/7dGxEQBauKTzJf5c8svOWGabY88ngmH7Em3WNpHGx8xKlhKJMB8Rri9P7pGa7bzOD41H/IGWG2DG1vg==
   dependencies:
     abitype "^0.8.3"
     eventemitter3 "^5.0.1"
@@ -644,10 +662,10 @@
   dependencies:
     "@tanstack/store" "^0.3.1"
 
-"@tanstack/query-core@5.29.0":
-  version "5.29.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.29.0.tgz#d0b3d12c07d5a47f42ab0c1ed4f317106f3d4b20"
-  integrity sha512-WgPTRs58hm9CMzEr5jpISe8HXa3qKQ8CxewdYZeVnA54JrPY9B1CZiwsCoLpLkf0dGRZq+LcX5OiJb0bEsOFww==
+"@tanstack/query-core@5.28.9":
+  version "5.28.9"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.28.9.tgz#170a7a8794ab73aeffbaf711ac62126479a5d026"
+  integrity sha512-hNlfCiqZevr3GRVPXS3MhaGW5hjcxvCsIQ4q6ff7EPlvFwYZaS+0d9EIIgofnegDaU2BbCDlyURoYfRl5rmzow==
 
 "@tanstack/react-form@^0.13.3":
   version "0.13.6"
@@ -660,11 +678,11 @@
     rehackt "^0.0.3"
 
 "@tanstack/react-query@^5.28.9":
-  version "5.29.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.29.2.tgz#c55ffbfaf9d8cf34212428db2b6c61ca6b545188"
-  integrity sha512-nyuWILR4u7H5moLGSiifLh8kIqQDLNOHGuSz0rcp+J75fNc8aQLyr5+I2JCHU3n+nJrTTW1ssgAD8HiKD7IFBQ==
+  version "5.28.9"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.28.9.tgz#13c2049daa5db6c3137473e279b209f76d39708e"
+  integrity sha512-vwifBkGXsydsLxFOBMe3+f8kvtDoqDRDwUNjPHVDDt+FoBetCbOWAUHgZn4k+CVeZgLmy7bx6aKeDbe3e8koOQ==
   dependencies:
-    "@tanstack/query-core" "5.29.0"
+    "@tanstack/query-core" "5.28.9"
 
 "@tanstack/react-store@^0.3.1":
   version "0.3.1"
@@ -774,9 +792,9 @@
     csstype "^3.0.2"
 
 "@types/react@^18.2.73":
-  version "18.2.79"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.79.tgz#c40efb4f255711f554d47b449f796d1c7756d865"
-  integrity sha512-RwGAGXPl9kSXwdNTafkOEuFrTBD5SA2B3iEB96xi8+xu5ddUa/cpvyVCSNn+asgLCTHkb5ZxN8gbuibYJi4s1w==
+  version "18.2.73"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.73.tgz#0579548ad122660d99e00499d22e33b81e73ed94"
+  integrity sha512-XcGdod0Jjv84HOC7N5ziY3x+qL0AfmubvKOZ9hJjJ2yd5EE+KYjWhdOjt387e9HPheHkdggF9atTifMRtyAaRA==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
