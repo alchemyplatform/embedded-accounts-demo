@@ -1,8 +1,12 @@
 "use client";
 
-import { LoginSignupCard } from "@/components/LoginSignupCard";
 import { UserCard } from "@/components/UserCard";
-import { useAccount, useSignerStatus } from "@alchemy/aa-alchemy/react";
+import { uiConfig } from "@/config";
+import {
+  AuthCard,
+  useAccount,
+  useSignerStatus,
+} from "@alchemy/aa-alchemy/react";
 
 export default function Home() {
   const signerStatus = useSignerStatus();
@@ -13,9 +17,13 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-24 gap-4 justify-center">
       {signerStatus.isInitializing ? (
-        <span className="loading loading-ring loading-lg"></span>
+        <span className="daisy-loading daisy-loading-ring daisy-loading-lg"></span>
       ) : account == null ? (
-        <LoginSignupCard />
+        <div className="daisy-card bg-base-100 shadow-xl w-[420px] max-w-[420px]">
+          <div className="daisy-card-body">
+            <AuthCard {...uiConfig?.auth} />
+          </div>
+        </div>
       ) : (
         <UserCard />
       )}

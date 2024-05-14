@@ -1,6 +1,6 @@
-import type { Config } from "tailwindcss";
+import { withAccountKitUi } from "@alchemy/aa-alchemy/tailwind";
 
-const config: Config = {
+const config = withAccountKitUi({
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,5 +16,9 @@ const config: Config = {
     },
   },
   plugins: [require("daisyui")],
-};
+  daisyui: {
+    prefix: "daisy-",
+  },
+});
+
 export default config;

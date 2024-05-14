@@ -84,10 +84,10 @@ export const UserCard = () => {
   });
 
   return (
-    <div className="card bg-base-100 shadow-xl w-[500px] max-w-[500px]">
-      <div className="card-body gap-5">
+    <div className="daisy-card bg-base-100 shadow-xl w-[500px] max-w-[500px]">
+      <div className="daisy-card-body gap-5">
         <div className="flex flex-row justify-between">
-          <h2 className="card-title">Welcome back!</h2>
+          <h2 className="daisy-card-title">Welcome back!</h2>
           <button onClick={() => logout()}>Logout</button>
         </div>
         <div className="flex flex-col justify-left">
@@ -128,12 +128,12 @@ export const UserCard = () => {
               }}
             >
               {(field) => (
-                <label className="form-control w-full flex flex-col gap-2">
+                <label className="daisy-form-control w-full flex flex-col gap-2">
                   <strong>Sign Message</strong>
                   <div className="flex flex-row gap-2">
                     <textarea
                       placeholder="Type here"
-                      className="textarea textarea-bordered w-full"
+                      className="daisy-textarea daisy-textarea-bordered w-full"
                       name={field.name}
                       value={field.state.value ?? ""}
                       onBlur={field.handleBlur}
@@ -146,7 +146,7 @@ export const UserCard = () => {
             <form.Subscribe>
               {({ canSubmit, isSubmitting }) => (
                 <button
-                  className="btn"
+                  className="daisy-btn"
                   disabled={!canSubmit || isSubmitting || isLoadingClient}
                   type="submit"
                 >
