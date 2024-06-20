@@ -4,7 +4,6 @@ import {
   useBundlerClient,
   useExportAccount,
   useLogout,
-  useSigner,
   useSignMessage,
   useSmartAccountClient,
   useUser,
@@ -31,7 +30,6 @@ const iframeCss: React.CSSProperties = {
 
 export const UserCard = () => {
   const bundlerClient = useBundlerClient();
-  const signer = useSigner();
   const { client, isLoadingClient } = useSmartAccountClient({
     type: "MultiOwnerModularAccount",
   });
@@ -44,7 +42,7 @@ export const UserCard = () => {
       setIsValid(
         await bundlerClient
           .verifyMessage({
-            address: client!.getAddress(),
+            address: client ? client.getAddress() : user!.address,
             message: msg.message,
             signature,
           })
@@ -90,19 +88,23 @@ export const UserCard = () => {
           <h2 className="daisy-card-title">Welcome back!</h2>
           <button onClick={() => logout()}>Logout</button>
         </div>
-        <div className="flex flex-col justify-left">
-          <div className="flex flex-row gap-2">
-            <strong>Email</strong>
-            <button onClick={() => addPasskey()}>[Add Passkey]</button>
-          </div>
-          <div className="flex flex-row gap-2">
-            <code className="break-words">{user!.email}</code>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <strong>Account Address</strong>
-          <code className="break-words">{client?.account.address}</code>
-        </div>
+        {user?.type === "sca" && (
+          <>
+            <div className="flex flex-col justify-left">
+              <div className="flex flex-row gap-2">
+                <strong>Email</strong>
+                <button onClick={() => addPasskey()}>[Add Passkey]</button>
+              </div>
+              <div className="flex flex-row gap-2">
+                <code className="break-words">{user!.email}</code>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <strong>Account Address</strong>
+              <code className="break-words">{client?.account.address}</code>
+            </div>
+          </>
+        )}
         <div className="flex flex-col">
           <strong>Signer Address</strong>
           <code className="break-words">{user!.address}</code>
