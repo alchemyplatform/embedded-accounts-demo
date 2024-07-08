@@ -1,7 +1,6 @@
 "use client";
 
 import { UserCard } from "@/components/UserCard";
-import { uiConfig } from "@/config";
 import { AuthCard, useSignerStatus, useUser } from "@account-kit/react";
 
 export default function Home() {
@@ -15,7 +14,7 @@ export default function Home() {
       ) : user == null ? (
         <div className="daisy-card bg-base-100 shadow-xl w-[420px] max-w-[420px]">
           <div className="daisy-card-body">
-            <AuthCard {...uiConfig?.auth} />
+            <AuthCard />
           </div>
         </div>
       ) : (
