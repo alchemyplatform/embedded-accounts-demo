@@ -2,7 +2,7 @@
 
 import { UserCard } from "@/components/UserCard";
 import { uiConfig } from "@/config";
-import { AuthCard, useSignerStatus, useUser } from "@alchemy/aa-alchemy/react";
+import { AuthCard, useSignerStatus, useUser } from "@account-kit/react";
 
 export default function Home() {
   const signerStatus = useSignerStatus();

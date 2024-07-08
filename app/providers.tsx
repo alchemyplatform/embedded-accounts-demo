@@ -1,7 +1,7 @@
 "use client";
 import { config, queryClient, uiConfig } from "@/config";
-import { AlchemyClientState } from "@alchemy/aa-alchemy/config";
-import { AlchemyAccountProvider } from "@alchemy/aa-alchemy/react";
+import { AlchemyClientState } from "@account-kit/core";
+import { AlchemyAccountProvider } from "@account-kit/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren, Suspense } from "react";
 

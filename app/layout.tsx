@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { cookieToInitialState } from "@alchemy/aa-alchemy/config";
+import { cookieToInitialState } from "@account-kit/core";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";

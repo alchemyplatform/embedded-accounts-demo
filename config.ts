@@ -1,6 +1,6 @@
-import { cookieStorage, createConfig } from "@alchemy/aa-alchemy/config";
-import { AlchemyAccountsProviderProps } from "@alchemy/aa-alchemy/react";
-import { sepolia } from "@alchemy/aa-core";
+import { cookieStorage, createConfig } from "@account-kit/core";
+import { sepolia } from "@account-kit/infra";
+import { AlchemyAccountsProviderProps } from "@account-kit/react";
 import { QueryClient } from "@tanstack/react-query";
 
 export const config = createConfig({

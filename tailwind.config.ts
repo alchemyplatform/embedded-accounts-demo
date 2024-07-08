@@ -1,4 +1,4 @@
-import { withAccountKitUi } from "@alchemy/aa-alchemy/tailwind";
+import { withAccountKitUi } from "@account-kit/react/tailwind";
 
 const config = withAccountKitUi({
   content: [
